@@ -27,11 +27,16 @@ _terminal_bin_path="/e/Utils/MSYS2/msys2_shell.cmd"
 
 alias cls='clear'
 alias cmake='cmake -G "Unix Makefiles"'
-alias g=git
 alias ll='ls -hlao -F --color=auto --show-control-chars --group-directories-first'
 alias ls='ls -ha -F --color=auto --show-control-chars --group-directories-first'
 alias rtail="tail --follow=name --retry -n 500"
 
+# g - git
+alias g=git
+source /usr/share/git/completion/git-completion.bash
+__git_complete g __git_main
+
+# term - Terminal
 _term_function() {
 	if [[ $# -eq 0 ]]; then
 		$_terminal_bin_path -where $(pwd) -use-full-path &
@@ -43,11 +48,13 @@ _term_function() {
 }
 alias term="_term_function"
 
+# np - Notepad++
 _np_function() {
 	$_np_bin_path $@ &
 }
 alias np='_np_function'
 
+# tc - Total Commander
 _tc_function() {
 	if [[ $# -eq 0 ]]; then
 		$_tc_bin_path -O -T -L="$(pwd)" &
