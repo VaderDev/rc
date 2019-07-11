@@ -1,0 +1,19 @@
+screen -t " "
+screen -t " "
+screen -t " "
+
+altscreen on
+term screen-256color
+
+bind ',' prev
+bind '.' next
+bind '`' select 0
+
+termcapinfo xterm* ti@:te@
+
+vbell "off"
+startup_message off
+
+#screen, with the time and date and with the current window highlighted
+hardstatus alwayslastline
+hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{W} %m.%d. %c %{g}]'
