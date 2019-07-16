@@ -2,7 +2,7 @@
 " --- Terminal ---------------------------------------------
 set nocompatible
 set term=xterm
-set mouse=a                     " Enable use of the mouse for all modes
+set mouse=""                    " Disable use of the mouse
 
 " --- Options ----------------------------------------------
 set tabstop=4                   " Size of a hard tabstop (ts)
@@ -23,6 +23,7 @@ set smartcase                   " ...except when using capital letters
 " --- Binding ----------------------------------------------
 nnoremap <Tab> >>|              " Command mode: indent right
 nnoremap <S-Tab> <<|            " Command mode: indent left
+"noremap <LeftRelease> "+y<LeftRelease>gv| " Left mouse click copies selection
 
 " --- Visual -----------------------------------------------
 syntax on                       " Enable syntax highlighting

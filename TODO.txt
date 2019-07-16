@@ -1,0 +1,2 @@
+term command does incorrectly pull the PATH over
+
