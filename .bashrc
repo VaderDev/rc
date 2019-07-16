@@ -21,9 +21,20 @@ esac
 
 # --- PS1 ---
 
-PS1_TITLE='\[\e]0;\w\a\]'
-PS1_DIRECTORY='\[\e[32m\]\w\[\e[m\]'
-PS1="${PS1_TITLE}${PS1_DIRECTORY}> "
+# If SSH prepend the user@host
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+	PS1_HOST="\[\e[33m\]\h\[\e[m\]"
+	PS1_USER="\[\e[36m\]\u\[\e[m\]"
+	PS1_DIRECTORY="\[\e[32m\]\w\[\e[m\]"
+
+	PS1_TITLE="\[\e]0;\u@\h \w\a\]"
+	PS1="${PS1_TITLE}${PS1_USER}@${PS1_HOST} ${PS1_DIRECTORY}> "
+else
+	PS1_DIRECTORY="\[\e[32m\]\w\[\e[m\]"
+
+	PS1_TITLE="\[\e]0;\w\a\]"
+	PS1="${PS1_TITLE}${PS1_DIRECTORY}> "
+fi
 
 
 
