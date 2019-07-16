@@ -18,6 +18,13 @@ xterm*)
 esac
 
 
+
+# --- PS1 ---
+
+PS1='\[\e[32m\]\w\[\e[m\]> '
+
+
+
 # --- alias ---
 
 _tc_bin_path="/e/Utils/TotalCommander/TOTALCMD64.EXE"
@@ -68,10 +75,6 @@ _tc_function() {
 }
 alias tc='_tc_function'
 
-
-# --- PS1 ---
-
-PS1='\e[32m\]\w\[\e[m\]> '
 
 
 # --- go script ---
