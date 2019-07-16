@@ -21,7 +21,9 @@ esac
 
 # --- PS1 ---
 
-PS1='\[\e[32m\]\w\[\e[m\]> '
+PS1_TITLE='\[\e]0;\w\a\]'
+PS1_DIRECTORY='\[\e[32m\]\w\[\e[m\]'
+PS1="${PS1_TITLE}${PS1_DIRECTORY}> "
 
 
 
