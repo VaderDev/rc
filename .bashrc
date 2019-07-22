@@ -105,12 +105,12 @@ alias tc='_tc_function'
 declare -A _go_shortcuts=( 
 	["cpp"]="cd /e/dev/cpp/"
 	["dev"]="cd /e/dev/"
-	["desktop"]="cd /c/Users/$(whoami)/Desktop/"
+	["desktop"]='cd /c/Users/$(whoami)/Desktop/'
 	["download"]="cd /f/download/"
 	["iris"]="cd /e/dev/cpp/iris/"
 	["libv"]="cd /e/dev/cpp/libv/"
-	["maya"]="cd /d/X-Files/Maya/"
-	["mysql"]="cd /d/X-Files/mysql/"
+	["maya"]="cd /f/project/iris/maya/scene"
+	["mysql"]="cd /f/project/mysql/"
 	["project"]="cd /f/project/"
 	["todo"]="cd /f/project/todo/"
 	["rc"]="cd /f/project/rc/"
@@ -118,7 +118,6 @@ declare -A _go_shortcuts=(
 	["temp"]='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /f/temp)'
 	["util"]="cd /e/Utils/"
 	["utild"]="cd /d/Utils/"
-	["xfiles"]="cd /d/X-Files/"
 )
 
 _go_shortcuts_align_key=10;
