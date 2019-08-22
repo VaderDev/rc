@@ -1,6 +1,8 @@
 /*
 /*/
 
+!/bash/
+
 !/.bashrc
 !/.editorconfig
 !/.gitignore
