@@ -49,5 +49,9 @@ _tc_function() {
 }
 alias tc='_tc_function'
 
-
+# md
+md () {
+	mkdir -p -- "$1" &&
+	cd -P -- "$1"
+}
 
