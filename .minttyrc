@@ -1,0 +1,8 @@
+BoldAsFont=-1
+BackgroundColour=20,22,24
+Font=Consolas
+FontHeight=10
+RightClickAction=paste
+Columns=132
+Rows=75
+Term=xterm
