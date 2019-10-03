@@ -14,7 +14,8 @@ alias rtail="tail --follow=name --retry -n 500"
 
 # g - git
 alias g=git
-source /usr/share/git/completion/git-completion.bash
+FILE=/usr/share/git/completion/git-completion.bash; [ -f $FILE ] && source $FILE
+FILE=/usr/share/bash-completion/completions/git; [ -f $FILE ] && source $FILE
 __git_complete g __git_main
 
 # term - Terminal
