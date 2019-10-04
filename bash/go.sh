@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # --- go script ---
 
 declare -A _go_shortcuts=( 

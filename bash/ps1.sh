@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # --- PS1 ---
 
 if [[ $EUID -eq 0 ]]; then
