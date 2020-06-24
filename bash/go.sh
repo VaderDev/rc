@@ -15,7 +15,6 @@ declare -A _go_shortcuts=(
 	["todo"]="cd /f/project/todo/"
 	["rc"]="cd /f/project/rc/"
 	["script"]="cd /f/project/script/"
-	["szakd"]="cd /f/project/szakd/"
 	["temp"]='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /f/temp)'
 	["util"]="cd /e/Utils/"
 	["utild"]="cd /d/Utils/"
