@@ -23,4 +23,17 @@ source ~/bash/alias.sh
 source ~/bash/ps1.sh
 source ~/bash/go.sh
 
+
+
+
+export HISTTIMEFORMAT="%h %d %H:%M:%S "
+export HISTSIZE=10000
+export HISTFILESIZE=10000
+PROMPT_COMMAND='$PROMPT_COMMAND; history -a'
+
+export HISTIGNORE="ls:ps:history"
+export HISTIGNORE="s*"
+
+shopt -s cmdhist # Use one command per line
+
  
