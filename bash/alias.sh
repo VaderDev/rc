@@ -2,9 +2,9 @@
 
 # --- alias ---
 
-_tc_bin_path="/e/Utils/TotalCommander/TOTALCMD64.EXE"
-_np_bin_path="/f/utility/Notepad++/notepad++.exe"
-_terminal_bin_path="/e/Utils/MSYS2/msys2_shell.cmd"
+_tc_bin_path="\"/d/utility/Total Commander 9.51/TOTALCMD64.EXE\""
+_np_bin_path="/d/utility/Notepad++/notepad++.exe"
+_terminal_bin_path="/d/project/msys2/mingw64.exe"
 
 
 alias cls='clear'

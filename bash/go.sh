@@ -3,21 +3,19 @@
 # --- go script ---
 
 declare -A _go_shortcuts=( 
-	["cpp"]="cd /e/dev/cpp/"
 	["desktop"]='cd /c/Users/$(whoami)/Desktop/'
-	["download"]="cd /f/download/"
+	["download"]="cd /d/download/"
 	["iris"]="cd /e/dev/cpp/iris/"
-	["irispro"]="cd /f/project/iris/"
+	["irispro"]="cd /d/project/iris/"
 	["libv"]="cd /e/dev/cpp/libv/"
-	["maya"]="cd /f/project/iris/maya/scene/"
-	["mysql"]="cd /f/project/mysql/"
-	["project"]="cd /f/project/"
-	["todo"]="cd /f/project/todo/"
-	["rc"]="cd /f/project/rc/"
-	["script"]="cd /f/project/script/"
+	["maya"]="cd /d/project/iris/maya/scene/"
+	["mysql"]="cd /d/project/mysql/"
+	["project"]="cd /d/project/"
+	["todo"]="cd /d/project/todo/"
+	["rc"]="cd /d/project/rc/"
+	["script"]="cd /d/project/script/"
 	["temp"]='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /f/temp)'
-	["util"]="cd /e/Utils/"
-	["utild"]="cd /d/Utils/"
+	["util"]="cd /d/utility/"
 
 	["vm"]='ssh vader@192.168.0.200 -p 10220'
 )
