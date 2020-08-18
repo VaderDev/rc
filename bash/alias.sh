@@ -8,7 +8,7 @@ _terminal_bin_path="/d/project/msys2/mingw64.exe"
 
 
 alias cls='clear'
-alias cmake='cmake -G "Unix Makefiles"'
+alias cmake='cmake -G Ninja'
 alias ll='ls -hlao -F --color=auto --show-control-chars --group-directories-first'
 alias ls='ls -ha -F --color=auto --show-control-chars --group-directories-first'
 alias rtail="tail --follow=name --retry -n 500"
