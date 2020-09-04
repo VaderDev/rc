@@ -14,7 +14,7 @@ declare -A _go_shortcuts=(
 	["todo"]="cd /d/project/todo/"
 	["rc"]="cd /d/project/rc/"
 	["script"]="cd /d/project/script/"
-	["temp"]='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /f/temp)'
+	["temp"]='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /d/temp)'
 	["util"]="cd /d/utility/"
 
 	["vm"]='ssh vader@192.168.0.200 -p 10220'
