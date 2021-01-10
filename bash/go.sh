@@ -18,7 +18,8 @@ declare -A _go_shortcuts=(
 	["temp"]='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /d/temp)'
 	["util"]="cd /d/utility/"
 
-	["vm"]='ssh vader@192.168.0.200 -p 10220'
+	["vm"]='ssh vader@192.168.0.200 -p 10022'
+	["rs0"]='ssh vader@rs0.corruptedai.com -p 10122'
 )
 
 _go_shortcuts_align_key=10;

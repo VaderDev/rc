@@ -1,6 +1,10 @@
-screen -t " "
-screen -t " "
-screen -t " "
+startup_message off
+vbell off
+msgwait 0
+
+screen -t " " 2
+screen -t " " 1 # Secondary
+screen -t " " 0 # Primary
 
 altscreen on
 term screen-256color
@@ -10,9 +14,6 @@ bind '.' next
 bind '`' select 0
 
 termcapinfo xterm* ti@:te@
-
-vbell "off"
-startup_message off
 
 #screen, with the time and date and with the current window highlighted
 hardstatus alwayslastline
