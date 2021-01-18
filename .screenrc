@@ -17,4 +17,4 @@ termcapinfo xterm* ti@:te@
 
 #screen, with the time and date and with the current window highlighted
 hardstatus alwayslastline
-hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{W} %m.%d. %c %{g}]'
+hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{R}(%{W}%n*%f%t%?(%u)%?%{R})%{w}%?%+Lw%?%?%= %{g}][%{W} %Y.%m.%d %c %{g}]'
