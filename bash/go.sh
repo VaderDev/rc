@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# --- go script ---
-
 declare -A _go_shortcuts=( 
 	["desktop"]='cd /c/Users/$(whoami)/Desktop/'
 	["download"]="cd /d/download/"
@@ -22,8 +20,23 @@ declare -A _go_shortcuts=(
 	["rs0"]='ssh vader@rs0.corruptedai.com -p 10122'
 )
 
+declare -A _go_shortcuts_rs=(
+	["tmp"]='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /tmp)'
+	["temp"]='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /tmp)'
+
+	["rs0"]='ssh vader@rs0.corruptedai.com -p 10122'
+)
+
+
+
+# --- go script ---
+
+# TODO: Auto load the correct go shortcuts based on the hostname
+# _go_shortcuts=_go_shortcuts_$HOSTNAME (This would not work, only an idea)
+
 _go_shortcuts_align_key=10;
-_go_shortcuts_indentation='    ';
+_go_shortcuts_indentation="    ";
+_go_shortcuts_sorted_keys=""; # Global cached key sort result, filled on demand
 _go_completion() {
 	local FOR_DISPLAY=1
 	if [ "${__FOO_PREV_LINE:-}" != "$COMP_LINE" ] || [ "${__FOO_PREV_POINT:-}" != "$COMP_POINT" ]; then
@@ -47,20 +60,50 @@ _go_completion() {
 }
 
 go() {
+	# Reset completion
+	__FOO_PREV_LINE=""
+	__FOO_PREV_POINT=0
+	
 	if [[ -v "_go_shortcuts[$1]" ]]; then
+		# Perfect match
 		eval ${_go_shortcuts[$1]}
 	else
 		if [[ $# -eq 0 ]]; then
+			# No argument
 			echo "Possible options are:"
 		elif [[ $# -gt 1 ]]; then
+			# More than one argument
 			echo "Too many arguments provided. Usage \"go <shortcut>\". Possible options are:"
 		else
-			echo "Missing shortcut for '$1'. Possible options are:"
+			# One argument
+			local single_possibile_options=""
+
+			for key in "${!_go_shortcuts[@]}"; do
+				if [ "${key:0:${#1}}" == "$1" ]; then
+					if [ "${single_possibile_options}" == "" ]; then
+						single_possibile_options="${key}"
+					else
+						single_possibile_options=""
+						break
+					fi
+				fi
+			done
+
+			if [ "${single_possibile_options}" != "" ]; then
+				eval ${_go_shortcuts[${single_possibile_options}]}
+				return
+			else
+				echo "Missing shortcut for '$1'. Possible options are:"
+			fi
 		fi
-		local sorted=$(for key in "${!_go_shortcuts[@]}"; do echo $key; done | sort)
+
+		if [ "${_go_shortcuts_sorted_keys}" == "" ]; then
+			# First print output run (to reduce bash sourceing time) cache result in global var
+			_go_shortcuts_sorted_keys=$(for key in "${!_go_shortcuts[@]}"; do echo $key; done | sort)
+		fi
 		while read -r key; do
 			printf "${_go_shortcuts_indentation}%-${_go_shortcuts_align_key}s - %s\n" "$key" "${_go_shortcuts[$key]}"
-		done <<< "$sorted"
+		done <<< "$_go_shortcuts_sorted_keys"
 	fi
 }
 
