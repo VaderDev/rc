@@ -31,7 +31,7 @@ declare -A _go_shortcuts_rs=(
 
 # --- go script ---
 
-# TODO: Auto load the correct go shortcuts based on the hostname
+# TODO P4: Auto load the correct go shortcuts based on the hostname
 # _go_shortcuts=_go_shortcuts_$HOSTNAME (This would not work, only an idea)
 
 _go_shortcuts_align_key=10;
@@ -39,6 +39,8 @@ _go_shortcuts_indentation="    ";
 _go_shortcuts_sorted_keys=""; # Global cached key sort result, filled on demand
 _go_completion() {
 	local FOR_DISPLAY=1
+
+	# TODO P5: Bug: go t<tab><tab>^Cgo t<tab><tab> incorrectly prints a tab and does not prints the possilbe options
 	if [ "${__FOO_PREV_LINE:-}" != "$COMP_LINE" ] || [ "${__FOO_PREV_POINT:-}" != "$COMP_POINT" ]; then
 		__FOO_PREV_LINE=$COMP_LINE
 		__FOO_PREV_POINT=$COMP_POINT
