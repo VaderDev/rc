@@ -18,6 +18,9 @@ declare -A _go_shortcuts=(
 
 	["vm"]='ssh vader@192.168.0.200 -p 10022'
 	["rs0"]='ssh vader@rs0.corruptedai.com -p 10122'
+
+	["ca-rs0"]='ssh vader@rs0.corruptedai.com -p 10122'
+	["ca-web-dev"]='ssh vader@web-dev.corruptedai.com -p 22001'
 )
 
 declare -A _go_shortcuts_rs=(

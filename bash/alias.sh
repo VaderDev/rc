@@ -9,9 +9,10 @@ _terminal_bin_path="/e/utility/msys2/mingw64.exe"
 
 alias cls='clear'
 alias cmake='cmake -G Ninja'
-alias ll='ls -hlao -F --color=auto --show-control-chars --group-directories-first'
-alias ls='ls -ha -F --color=auto --show-control-chars --group-directories-first'
+alias ll='ls -hAlo -F --color=auto --show-control-chars --group-directories-first'
+alias ls='ls -hA -F --color=auto --show-control-chars --group-directories-first'
 alias rtail="tail --follow=name --retry -n 500"
+alias ..='cd ..'
 
 # g - git
 alias g=git
