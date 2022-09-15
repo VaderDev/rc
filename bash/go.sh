@@ -1,26 +1,34 @@
 #!/usr/bin/env bash
 
-declare -A _go_shortcuts=( 
+declare -A _go_shortcuts=(
 	["desktop"]='cd /c/Users/$(whoami)/Desktop/'
 	["download"]="cd /d/download/"
-	["iris"]="cd /e/dev/cpp/iris/"
+	["tmp"]='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /d/temp)'
+	["temp"]='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /d/temp)'
+	["util"]="cd /d/utility/"
+
 	["irispro"]="cd /d/project/iris/"
-	["libv"]="cd /e/dev/cpp/libv/"
 	["maya"]="cd /d/project/iris/maya/scene/"
 	["mysql"]="cd /d/project/mysql/"
 	["project"]="cd /d/project/"
 	["todo"]="cd /d/project/todo/"
 	["rc"]="cd /d/project/rc/"
 	["script"]="cd /d/project/script/"
-	["tmp"]='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /d/temp)'
-	["temp"]='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /d/temp)'
-	["util"]="cd /d/utility/"
+	["web"]="cd /d/project/web/corruptedai.com/"
+
+	["cpp"]="cd /e/dev/cpp/"
+	["libv"]="cd /e/dev/cpp/libv/"
+	["iris"]="cd /e/dev/cpp/iris/"
+	["fork"]="cd /e/dev/cpp/forks/"
+	["wish"]="cd /e/dev/cpp/wish/"
 
 	["vm"]='ssh vader@192.168.0.200 -p 10022'
-	["rs0"]='ssh vader@rs0.corruptedai.com -p 10122'
+#	["rs0"]='ssh vader@rs0.corruptedai.com -p 10122'
 
-	["ca-rs0"]='ssh vader@rs0.corruptedai.com -p 10122'
-	["ca-web-dev"]='ssh vader@web-dev.corruptedai.com -p 22001'
+#	["ca-rs0"]='ssh vader@rs0.corruptedai.com -p 10122'
+#	["ca-web-dev"]='ssh vader@web-dev.corruptedai.com -p 22001'
+
+	["ca-dev"]='ssh vader@dev.corruptedai.com -p 16022'
 )
 
 declare -A _go_shortcuts_rs=(
