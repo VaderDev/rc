@@ -7,11 +7,13 @@ _np_bin_path="/d/utility/Notepad++/notepad++.exe"
 _terminal_bin_path="/e/utility/msys2/mingw64.exe"
 
 
+alias ..='cd ..'
 alias cls='clear'
 alias ll='ls -hAlo -F --color=auto --show-control-chars --group-directories-first'
 alias ls='ls -hA -F --color=auto --show-control-chars --group-directories-first'
 alias rtail="tail --follow=name --retry -n 500"
-alias ..='cd ..'
+alias cloc="cloc --force-lang=GLSL,fs,gs,cs,vs"
+
 
 # g - git
 alias g=git
