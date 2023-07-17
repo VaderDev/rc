@@ -22,13 +22,13 @@ declare -A _go_shortcuts=(
 	["fork"]="cd /d/dev/cpp/forks/"
 	["wish"]="cd /d/dev/cpp/wish/"
 
-	["vm"]='ssh vader@192.168.0.200 -p 10022'
+	["vm"]='ssh -t vader@192.168.0.200 -p 10022 screen -x -RR'
 #	["rs0"]='ssh vader@rs0.corruptedai.com -p 10122'
 
 #	["ca-rs0"]='ssh vader@rs0.corruptedai.com -p 10122'
 #	["ca-web-dev"]='ssh vader@web-dev.corruptedai.com -p 22001'
 
-	["ca-dev"]='ssh vader@dev.corruptedai.com -p 16022'
+	["ca-dev"]='ssh -t vader@dev.corruptedai.com -p 16022 screen -x -RR'
 )
 
 declare -A _go_shortcuts_rs=(
