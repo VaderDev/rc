@@ -1,2 +1,5 @@
-term command does incorrectly pull the PATH over
+
+Per machine target support for the go.sh script
+Per machine pathes for programs for alias.sh
+
 
