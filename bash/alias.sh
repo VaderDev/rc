@@ -14,6 +14,8 @@ alias ls='ls -hA -F --color=auto --show-control-chars --group-directories-first'
 alias rtail="tail --follow=name --retry -n 500"
 alias cloc="cloc --force-lang=GLSL,fs,gs,cs,vs"
 
+alias npm="pnpm"
+alias npx="pnpx"
 
 # g - git
 alias g=git
