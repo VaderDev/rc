@@ -2,9 +2,9 @@
 
 # --- alias ---
 
-_tc_bin_path="/d/utility/Total\\ Commander\\ 9.51/TOTALCMD64.EXE"
+_tc_bin_path="/d/utility/Total\\ Commander/TOTALCMD64.EXE"
 _np_bin_path="/d/utility/Notepad++/notepad++.exe"
-_terminal_bin_path="/e/utility/msys2/mingw64.exe"
+_terminal_bin_path="/d/utility/MSYS2/mingw64.exe"
 
 
 alias ..='cd ..'
@@ -13,9 +13,9 @@ alias ll='ls -hAlo -F --color=auto --show-control-chars --group-directories-firs
 alias ls='ls -hA -F --color=auto --show-control-chars --group-directories-first'
 alias rtail="tail --follow=name --retry -n 500"
 alias cloc="cloc --force-lang=GLSL,fs,gs,cs,vs"
-
 alias npm="pnpm"
 alias npx="pnpx"
+alias updaterc="(cd && git clone https://github.com/VaderY/rc.git _rc_repo && _rc_repo/update.sh; rm -rf ~/_rc_repo) && source ~/.bashrc"
 
 # g - git
 alias g=git
