@@ -16,11 +16,11 @@ declare -A _go_shortcuts=(
 	["script"]="cd /d/project/script/"
 	["web"]="cd /d/project/web/corruptedai.com/"
 
-	["cpp"]="cd /e/dev/cpp/"
-	["libv"]="cd /e/dev/cpp/libv/"
-	["iris"]="cd /e/dev/cpp/iris/"
-	["fork"]="cd /e/dev/cpp/forks/"
-	["wish"]="cd /e/dev/cpp/wish/"
+	["cpp"]="cd /d/dev/cpp/"
+	["libv"]="cd /d/dev/cpp/libv/"
+	["iris"]="cd /d/dev/cpp/iris/"
+	["fork"]="cd /d/dev/cpp/forks/"
+	["wish"]="cd /d/dev/cpp/wish/"
 
 	["vm"]='ssh vader@192.168.0.200 -p 10022'
 #	["rs0"]='ssh vader@rs0.corruptedai.com -p 10122'
