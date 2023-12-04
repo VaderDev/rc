@@ -1,7 +1,6 @@
 
 Per machine target support for the go.sh script
-Per machine pathes for programs for alias.sh
-
+Per machine paths for programs in alias.sh
 
 Do not override the .bashrc, only append at the end, do not append multiple times
 

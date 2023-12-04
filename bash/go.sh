@@ -1,34 +1,34 @@
 #!/usr/bin/env bash
 
 declare -A _go_shortcuts=(
-	["desktop"]='cd /c/Users/$(whoami)/Desktop/'
-	["download"]="cd /d/download/"
-	["tmp"]='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /d/temp)'
-	["temp"]='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /d/temp)'
-	["util"]="cd /d/utility/"
+	['desktop']='cd /c/Users/$(whoami)/Desktop/'
+	['download']='cd /d/download/'
+	['tmp']='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /d/temp)'
+	['temp']='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /d/temp)'
+	['util']='cd /d/utility/'
 
-	["irispro"]="cd /d/project/iris/"
-	["maya"]="cd /d/project/iris/maya/scene/"
-	["mysql"]="cd /d/project/mysql/"
-	["project"]="cd /d/project/"
-	["todo"]="cd /d/project/todo/"
-	["rc"]="cd /d/project/rc/"
-	["script"]="cd /d/project/script/"
-	["web"]="cd /d/project/web/corruptedai.com/"
+	['irispro']='cd /d/project/iris/'
+	['maya']='cd /d/project/iris/maya/scene/'
+	['mysql']='cd /d/project/mysql/'
+	['project']='cd /d/project/'
+	['todo']='cd /d/project/todo/'
+	['rc']='cd /d/project/rc/'
+	['script']='cd /d/project/script/'
+	['web']='cd /d/project/web/corruptedai.com/'
 
-	["cpp"]="cd /d/dev/cpp/"
-	["libv"]="cd /d/dev/cpp/libv/"
-	["iris"]="cd /d/dev/cpp/iris/"
-	["fork"]="cd /d/dev/cpp/forks/"
-	["wish"]="cd /d/dev/cpp/wish/"
+	['cpp']='cd /d/dev/cpp/'
+	['libv']='cd /d/dev/cpp/libv/'
+	['iris']='cd /d/dev/cpp/iris/'
+	['fork']='cd /d/dev/cpp/forks/'
+	['wish']='cd /d/dev/cpp/wish/'
 
-	["vm"]='ssh -t vader@192.168.0.200 -p 10022 screen -x -RR'
-#	["rs0"]='ssh vader@rs0.corruptedai.com -p 10122'
+	['vm']='ssh -t vader@192.168.0.200 -p 10022 screen -x -RR'
+#	['rs0']='ssh vader@rs0.corruptedai.com -p 10122'
 
-#	["ca-rs0"]='ssh vader@rs0.corruptedai.com -p 10122'
-#	["ca-web-dev"]='ssh vader@web-dev.corruptedai.com -p 22001'
+#	['ca-rs0']='ssh vader@rs0.corruptedai.com -p 10122'
+#	['ca-web-dev']='ssh vader@web-dev.corruptedai.com -p 22001'
 
-	["ca-dev"]='ssh -t vader@dev.corruptedai.com -p 16022 screen -x -RR'
+	['ca-dev']='ssh -t vader@dev.corruptedai.com -p 16022 screen -x -RR'
 )
 
 declare -A _go_shortcuts_rs=(
@@ -76,7 +76,7 @@ go() {
 	# Reset completion
 	__FOO_PREV_LINE=""
 	__FOO_PREV_POINT=0
-	
+
 	if [[ -v "_go_shortcuts[$1]" ]]; then
 		# Perfect match
 		eval ${_go_shortcuts[$1]}
