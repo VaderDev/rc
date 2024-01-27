@@ -1,67 +1,32 @@
 #!/usr/bin/env bash
 
-declare -A _go_shortcuts=(
-	['desktop']='cd /c/Users/$(whoami)/Desktop/'
-	['download']='cd /d/download/'
-	['tmp']='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /d/temp)'
-	['temp']='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /d/temp)'
-	['util']='cd /d/utility/'
 
-	['piris']='cd /d/project/iris/'
-	['maya']='cd /d/project/iris/maya/scene/'
-	['mysql']='cd /d/project/mysql/'
-	['project']='cd /d/project/'
-	['todo']='cd /d/project/todo/'
-	['rc']='cd /d/project/rc/'
-	['script']='cd /d/project/script/'
-	['web']='cd /d/project/web/corruptedai.com/'
+# --- Config ---
+_vader_go_shortcuts_file="$HOME/bash/go-shortcuts"
+_vader_go_shortcuts_indentation="    "
 
-	['cpp']='cd /d/dev/cpp/'
-	['libv']='cd /d/dev/cpp/libv/'
-	['iris']='cd /d/dev/cpp/iris/'
-	['fork']='cd /d/dev/cpp/forks/'
-	['wish']='cd /d/dev/cpp/wish/'
+# --- Setup ---
+declare -A _vader_go_shortcuts=()
+_vader_go_shortcuts_align_key=0
+_vader_go_shortcuts_sorted_keys="" # Global cached key sort result, filled on demand
 
-	['vm']='ssh -t vader@192.168.0.200 -p 10022 screen -x -RR'
-
-	['ca-dev']='ssh -t vader@dev.corruptedai.com -p 16022 screen -x -RR'
-)
-
-declare -A _go_shortcuts_rs=(
-	["tmp"]='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /tmp)'
-	["temp"]='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /tmp)'
-
-	["rs0"]='ssh vader@rs0.corruptedai.com -p 10122'
-)
-
-
-
-# --- go script ---
-
-# TODO P1: Store go shortcuts in a file and auto load the systems go file
-# TODO P2: Ability to create 'cd' command from command line (edit file)
-# TODO P3: Ability to create custom command from command line (edit file)
-# TODO P2: Ability to update/delete commands from command line (edit file)
-
-_go_shortcuts_align_key=10;
-_go_shortcuts_indentation="    ";
-_go_shortcuts_sorted_keys=""; # Global cached key sort result, filled on demand
-_go_completion() {
+# --- Go completion ---
+_vader_go_completion() {
 	local FOR_DISPLAY=1
 
 	# TODO P5: Bug: go t<tab>^Cgo t<tab><tab> incorrectly prints a tab and does not prints the possilbe options
-	if [ "${__VADER_GO_PREV_LINE:-}" != "$COMP_LINE" ] || [ "${__VADER_GO_PREV_POINT:-}" != "$COMP_POINT" ]; then
-		__VADER_GO_PREV_LINE=$COMP_LINE
-		__VADER_GO_PREV_POINT=$COMP_POINT
+	if [ "${__VADER_go_PREV_LINE:-}" != "$COMP_LINE" ] || [ "${__VADER_go_PREV_POINT:-}" != "$COMP_POINT" ]; then
+		__VADER_go_PREV_LINE=$COMP_LINE
+		__VADER_go_PREV_POINT=$COMP_POINT
 		FOR_DISPLAY=
 	fi
 
 	local IFS=$'\n'
 	COMPREPLY=($(
-		for key in "${!_go_shortcuts[@]}"; do
+		for key in "${!_vader_go_shortcuts[@]}"; do
 			if [ "${key:0:${#2}}" == "$2" ]; then
 				if [ -n "$FOR_DISPLAY" ]; then
-					printf "%-*s\n" "$COLUMNS" "$(printf "${_go_shortcuts_indentation}%-${_go_shortcuts_align_key}s" "${key}") - ${_go_shortcuts[$key]}"
+					printf "%-*s\n" "$COLUMNS" "$(printf "${_vader_go_shortcuts_indentation}%-${_vader_go_shortcuts_align_key}s" "${key}") - ${_vader_go_shortcuts[$key]}"
 				else
 					echo "${key}"
 				fi
@@ -70,14 +35,120 @@ _go_completion() {
 	))
 }
 
+# --- Load shortcuts file ---
+_vader_go_reload_shortcuts_file() {
+	_vader_go_shortcuts=()
+
+	# Add some defaults
+	if [[ "$MSYSTEM" == "MSYS" || "$MSYSTEM" == "MINGW32" || "$MSYSTEM" == "MINGW64" ]]; then
+		# Running in MSYS2 or MinGW environment
+		_vader_go_shortcuts['desktop']='cd "/c/Users/$(whoami)/Desktop/"'
+		_vader_go_shortcuts['tmp']='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /d/temp)'
+		_vader_go_shortcuts['temp']='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /d/temp)'
+	else
+		# Presume linux environment
+		_vader_go_shortcuts['desktop']='cd "$HOME/Desktop/"'
+		_vader_go_shortcuts['tmp']='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /tmp)'
+		_vader_go_shortcuts['temp']='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /tmp)'
+	fi
+
+	# Load shortcuts file
+	i=0
+	while IFS= read -r line; do
+		((i=i+1))
+		if [[ -z "$line" || "$line" == "#"* || "$line" == "//"* ]]; then
+			# Skip empty lines and comments
+			continue
+		fi
+
+		key=${line%%=*}
+		if [ -z "$key" ]; then
+			echo "Go script error: Missing key in ~/bash/go-shortcuts line $i: \"$line\""
+			continue
+		fi
+
+		keylen=${#key}
+		value=${line:$keylen+1}
+		_vader_go_shortcuts[$key]=$value
+	done < $_vader_go_shortcuts_file
+
+	# Post process
+	_vader_go_shortcuts_align_key=0
+	for key in "${!_vader_go_shortcuts[@]}"; do
+		if [ ${#key} -gt $_vader_go_shortcuts_align_key ]; then
+			_vader_go_shortcuts_align_key=${#key}
+		fi
+	done
+}
+
+_vader_go_reload_shortcuts_file
+
+# --- Go Script ---
 go() {
 	# Reset completion
-	__VADER_GO_PREV_LINE=""
-	__VADER_GO_PREV_POINT=0
+	__VADER_go_PREV_LINE=""
+	__VADER_go_PREV_POINT=0
 
-	if [[ -v "_go_shortcuts[$1]" ]]; then
+	# --- Shortcut editor ---
+	# TODO P2: Ability to create 'cd' command from command line (edit file)
+	# TODO P3: Ability to create custom command from command line (edit file)
+	# TODO P2: Ability to update/delete commands from command line (edit file)
+
+	if [[ $# -gt 0 ]]; then
+		case "$1" in
+		-a|--add)
+			# go --add key command...
+
+			## Check if there is a value after the flag
+			#if [[ -n $2 && $2 != -* ]]; then
+			#	file="$2"
+			#	shift 2  # Consume both the flag and its value
+			#else
+			#	echo "Error: Argument for $1 is missing or invalid."
+			#	return 1
+			#fi
+			;;
+		-c|--cwd)
+			# go --cwd key
+
+			## Check if there is a value after the flag
+			#if [[ -n $2 && $2 != -* ]]; then
+			#	directory="$2"
+			#	shift 2  # Consume both the flag and its value
+			#	else
+			#	echo "Error: Argument for $1 is missing or invalid."
+			#	return 1
+			#fi
+			;;
+		-e|--edit)
+			# go --edit key command...
+			;;
+		-u|--update)
+			# go --update key
+			;;
+		-r|--remove)
+			# go --remove key
+			;;
+		-i|--interactive)
+			vim $_vader_go_shortcuts_file
+			_vader_go_reload_shortcuts_file
+			return 0
+			;;
+		-h|--help)
+			echo "Usage: go"
+			return 0
+			;;
+		-*)
+			echo "Error: Unknown option '$1'. Use -h or --help for usage information."
+			return 1
+			;;
+		esac
+	fi
+
+	# --- Normal execution ---
+	if [[ -v "_vader_go_shortcuts[$1]" ]]; then
 		# Perfect match
-		eval ${_go_shortcuts[$1]}
+		eval ${_vader_go_shortcuts[$1]}
 	else
 		if [[ $# -eq 0 ]]; then
 			# No argument
@@ -90,7 +161,7 @@ go() {
 			local single_possibile_options=""
 			local has_possibile_options=0
 
-			for key in "${!_go_shortcuts[@]}"; do
+			for key in "${!_vader_go_shortcuts[@]}"; do
 				if [ "${key:0:${#1}}" == "$1" ]; then
 					has_possibile_options=1
 					if [ "${single_possibile_options}" == "" ]; then
@@ -103,13 +174,13 @@ go() {
 			done
 
 			if [ "${single_possibile_options}" != "" ]; then
-				eval ${_go_shortcuts[${single_possibile_options}]}
+				eval ${_vader_go_shortcuts[${single_possibile_options}]}
 				return
 			elif [ $has_possibile_options -ne 0 ]; then
 				echo "Multiple shortcut matches '$1'. Possible options are:"
-				for key in "${!_go_shortcuts[@]}"; do
+				for key in "${!_vader_go_shortcuts[@]}"; do
 					if [ "${key:0:${#1}}" == "$1" ]; then
-						printf "%-*s\n" "$COLUMNS" "$(printf "${_go_shortcuts_indentation}%-${_go_shortcuts_align_key}s" "${key}") - ${_go_shortcuts[$key]}"
+						printf "%-*s\n" "$COLUMNS" "$(printf "${_vader_go_shortcuts_indentation}%-${_vader_go_shortcuts_align_key}s" "${key}") - ${_vader_go_shortcuts[$key]}"
 					fi
 				done
 				return
@@ -118,15 +189,15 @@ go() {
 			fi
 		fi
 
-		if [ "${_go_shortcuts_sorted_keys}" == "" ]; then
+		if [ "${_vader_go_shortcuts_sorted_keys}" == "" ]; then
 			# First print output run (to reduce bash sourceing time) cache result in global var
-			_go_shortcuts_sorted_keys=$(for key in "${!_go_shortcuts[@]}"; do echo $key; done | sort)
+			_vader_go_shortcuts_sorted_keys=$(for key in "${!_vader_go_shortcuts[@]}"; do echo $key; done | sort)
 		fi
 		while read -r key; do
-			printf "${_go_shortcuts_indentation}%-${_go_shortcuts_align_key}s - %s\n" "$key" "${_go_shortcuts[$key]}"
-		done <<< "$_go_shortcuts_sorted_keys"
+			printf "${_vader_go_shortcuts_indentation}%-${_vader_go_shortcuts_align_key}s - %s\n" "$key" "${_vader_go_shortcuts[$key]}"
+		done <<< "$_vader_go_shortcuts_sorted_keys"
 	fi
 }
 
-complete -F _go_completion go
+complete -F _vader_go_completion go
 
