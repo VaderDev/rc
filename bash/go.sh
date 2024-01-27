@@ -7,7 +7,7 @@ declare -A _go_shortcuts=(
 	['temp']='cd $(mktemp -d -t __$(date +%Y%m%d_%H%M%S)_XXXXXXXX -p /d/temp)'
 	['util']='cd /d/utility/'
 
-	['irispro']='cd /d/project/iris/'
+	['piris']='cd /d/project/iris/'
 	['maya']='cd /d/project/iris/maya/scene/'
 	['mysql']='cd /d/project/mysql/'
 	['project']='cd /d/project/'
@@ -23,10 +23,6 @@ declare -A _go_shortcuts=(
 	['wish']='cd /d/dev/cpp/wish/'
 
 	['vm']='ssh -t vader@192.168.0.200 -p 10022 screen -x -RR'
-#	['rs0']='ssh vader@rs0.corruptedai.com -p 10122'
-
-#	['ca-rs0']='ssh vader@rs0.corruptedai.com -p 10122'
-#	['ca-web-dev']='ssh vader@web-dev.corruptedai.com -p 22001'
 
 	['ca-dev']='ssh -t vader@dev.corruptedai.com -p 16022 screen -x -RR'
 )
@@ -42,8 +38,10 @@ declare -A _go_shortcuts_rs=(
 
 # --- go script ---
 
-# TODO P4: Auto load the correct go shortcuts based on the hostname
-# _go_shortcuts=_go_shortcuts_$HOSTNAME (This would not work, only an idea)
+# TODO P1: Store go shortcuts in a file and auto load the systems go file
+# TODO P2: Ability to create 'cd' command from command line (edit file)
+# TODO P3: Ability to create custom command from command line (edit file)
+# TODO P2: Ability to update/delete commands from command line (edit file)
 
 _go_shortcuts_align_key=10;
 _go_shortcuts_indentation="    ";
@@ -51,10 +49,10 @@ _go_shortcuts_sorted_keys=""; # Global cached key sort result, filled on demand
 _go_completion() {
 	local FOR_DISPLAY=1
 
-	# TODO P5: Bug: go t<tab><tab>^Cgo t<tab><tab> incorrectly prints a tab and does not prints the possilbe options
-	if [ "${__FOO_PREV_LINE:-}" != "$COMP_LINE" ] || [ "${__FOO_PREV_POINT:-}" != "$COMP_POINT" ]; then
-		__FOO_PREV_LINE=$COMP_LINE
-		__FOO_PREV_POINT=$COMP_POINT
+	# TODO P5: Bug: go t<tab>^Cgo t<tab><tab> incorrectly prints a tab and does not prints the possilbe options
+	if [ "${__VADER_GO_PREV_LINE:-}" != "$COMP_LINE" ] || [ "${__VADER_GO_PREV_POINT:-}" != "$COMP_POINT" ]; then
+		__VADER_GO_PREV_LINE=$COMP_LINE
+		__VADER_GO_PREV_POINT=$COMP_POINT
 		FOR_DISPLAY=
 	fi
 
@@ -74,8 +72,8 @@ _go_completion() {
 
 go() {
 	# Reset completion
-	__FOO_PREV_LINE=""
-	__FOO_PREV_POINT=0
+	__VADER_GO_PREV_LINE=""
+	__VADER_GO_PREV_POINT=0
 
 	if [[ -v "_go_shortcuts[$1]" ]]; then
 		# Perfect match
@@ -90,9 +88,11 @@ go() {
 		else
 			# One argument
 			local single_possibile_options=""
+			local has_possibile_options=0
 
 			for key in "${!_go_shortcuts[@]}"; do
 				if [ "${key:0:${#1}}" == "$1" ]; then
+					has_possibile_options=1
 					if [ "${single_possibile_options}" == "" ]; then
 						single_possibile_options="${key}"
 					else
@@ -104,6 +104,14 @@ go() {
 
 			if [ "${single_possibile_options}" != "" ]; then
 				eval ${_go_shortcuts[${single_possibile_options}]}
+				return
+			elif [ $has_possibile_options -ne 0 ]; then
+				echo "Multiple shortcut matches '$1'. Possible options are:"
+				for key in "${!_go_shortcuts[@]}"; do
+					if [ "${key:0:${#1}}" == "$1" ]; then
+						printf "%-*s\n" "$COLUMNS" "$(printf "${_go_shortcuts_indentation}%-${_go_shortcuts_align_key}s" "${key}") - ${_go_shortcuts[$key]}"
+					fi
+				done
 				return
 			else
 				echo "Missing shortcut for '$1'. Possible options are:"
