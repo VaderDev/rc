@@ -24,4 +24,3 @@ source ~/bash/ps1.sh
 source ~/bash/go.sh
 source ~/bash/env.sh
 
- 
