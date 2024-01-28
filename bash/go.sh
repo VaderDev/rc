@@ -16,8 +16,8 @@ _vader_go_completion() {
 
 	# TODO P5: Bug: go t<tab>^Cgo t<tab><tab> incorrectly prints a tab and does not prints the possilbe options
 	if [ "${__VADER_go_PREV_LINE:-}" != "$COMP_LINE" ] || [ "${__VADER_go_PREV_POINT:-}" != "$COMP_POINT" ]; then
-		__VADER_go_PREV_LINE=$COMP_LINE
-		__VADER_go_PREV_POINT=$COMP_POINT
+		__VADER_go_PREV_LINE="$COMP_LINE"
+		__VADER_go_PREV_POINT="$COMP_POINT"
 		FOR_DISPLAY=
 	fi
 
@@ -36,6 +36,10 @@ _vader_go_completion() {
 }
 
 # --- Load shortcuts file ---
+if [ ! -e "$_vader_go_shortcuts_file" ]; then
+    touch "$_vader_go_shortcuts_file"
+fi
+
 _vader_go_reload_shortcuts_file() {
 	_vader_go_shortcuts=()
 
@@ -63,17 +67,18 @@ _vader_go_reload_shortcuts_file() {
 
 		key=${line%%=*}
 		if [ -z "$key" ]; then
-			echo "Go script error: Missing key in ~/bash/go-shortcuts line $i: \"$line\""
+			echo "Go script error: Missing key in ~/bash/go-shortcuts line $i: \"$line\"."
 			continue
 		fi
 
 		keylen=${#key}
 		value=${line:$keylen+1}
 		_vader_go_shortcuts[$key]=$value
-	done < $_vader_go_shortcuts_file
+	done < "$_vader_go_shortcuts_file"
 
 	# Post process
 	_vader_go_shortcuts_align_key=0
+	_vader_go_shortcuts_sorted_keys=""
 	for key in "${!_vader_go_shortcuts[@]}"; do
 		if [ ${#key} -gt $_vader_go_shortcuts_align_key ]; then
 			_vader_go_shortcuts_align_key=${#key}
@@ -90,52 +95,157 @@ go() {
 	__VADER_go_PREV_POINT=0
 
 	# --- Shortcut editor ---
-	# TODO P2: Ability to create 'cd' command from command line (edit file)
-	# TODO P3: Ability to create custom command from command line (edit file)
-	# TODO P2: Ability to update/delete commands from command line (edit file)
-
 	if [[ $# -gt 0 ]]; then
 		case "$1" in
-		-a|--add)
-			# go --add key command...
+		-a|--add) # go --add <key> [<command...>]
+			key="$2"
+			if [[ -z "$key" ]]; then
+				echo "Error: Missing key for $1."
+				return 1
+			fi
+			if [[ "$key" == -* ]]; then
+				echo "Error: Key \"$key\" is invalid for $1. Keys must not start with \"-\"."
+				return 1
+			fi
 
-			## Check if there is a value after the flag
-			#if [[ -n $2 && $2 != -* ]]; then
-			#	file="$2"
-			#	shift 2  # Consume both the flag and its value
-			#else
-			#	echo "Error: Argument for $1 is missing or invalid."
-			#	return 1
-			#fi
-			;;
-		-c|--cwd)
-			# go --cwd key
+			matching_rows=$(grep -c "^${key}=" "$_vader_go_shortcuts_file")
+			if [[ $matching_rows -ne 0 ]]; then
+				echo "Error: Key \"$key\" already exists."
+				return 2
+			fi
 
-			## Check if there is a value after the flag
-			#if [[ -n $2 && $2 != -* ]]; then
-			#	directory="$2"
-			#	shift 2  # Consume both the flag and its value
-			#	else
-			#	echo "Error: Argument for $1 is missing or invalid."
-			#	return 1
-			#fi
+			shift 2 # consume flag and key
+			if [[ $# -eq 0 ]]; then
+				echo "$key=cd \"`pwd`\"" >> "$_vader_go_shortcuts_file"
+				echo "Added new shortcut \"$key\" to the current directory: cd \"`pwd`\""
+			else
+				echo "$key=$*" >> "$_vader_go_shortcuts_file"
+				echo "Added new shortcut \"$key\": $*"
+			fi
+
+			_vader_go_reload_shortcuts_file
+			return 0
 			;;
-		-e|--edit)
-			# go --edit key command...
+		-u|--update) # go --update <key> [<command...>]
+			key="$2"
+			if [[ -z "$key" ]]; then
+				echo "Error: Missing key for $1."
+				return 1
+			fi
+			if [[ "$key" == -* ]]; then
+				echo "Error: Key \"$key\" is invalid for $1. Keys must not start with \"-\"."
+				return 1
+			fi
+
+			matching_rows=$(grep -c "^${key}=" "$_vader_go_shortcuts_file")
+			if [[ $matching_rows -eq 0 ]]; then
+				echo "Error: Key \"$key\" is not found."
+				return 2
+			fi
+
+			shift 2 # consume flag and key
+			if [[ $# -eq 0 ]]; then
+				command="cd \"`pwd`\""
+				escaped_command=$(printf '%s' "$command" | sed -e 's/[\/&]/\\&/g')
+				sed -i "s/^${key}=.*/${key}=$escaped_command/g" "$_vader_go_shortcuts_file"
+				echo "Updated shortcut \"$key\" to the current directory: cd \"`pwd`\""
+			else
+				command="$*"
+				escaped_command=$(printf '%s' "$command" | sed -e 's/[\/&]/\\&/g')
+				sed -i "s/^${key}=.*/${key}=$escaped_command/g" "$_vader_go_shortcuts_file"
+				echo "Updated shortcut \"$key\": $*"
+			fi
+
+			_vader_go_reload_shortcuts_file
+			return 0
 			;;
-		-u|--update)
-			# go --update key
+		-s|--save) # go --save <key> [<command...>]
+			key="$2"
+			if [[ -z "$key" ]]; then
+				echo "Error: Missing key for $1."
+				return 1
+			fi
+			if [[ "$key" == -* ]]; then
+				echo "Error: Key \"$key\" is invalid for $1. Keys must not start with \"-\"."
+				return 1
+			fi
+
+			matching_rows=$(grep -c "^${key}=" "$_vader_go_shortcuts_file")
+			shift 2 # consume flag and key
+			if [[ $matching_rows -eq 0 ]]; then
+				# Create mode
+				if [[ $# -eq 0 ]]; then
+					echo "$key=cd \"`pwd`\"" >> "$_vader_go_shortcuts_file"
+					echo "Added new shortcut \"$key\" to the current directory: cd \"`pwd`\""
+				else
+					echo "$key=$*" >> "$_vader_go_shortcuts_file"
+					echo "Added new shortcut \"$key\": $*"
+				fi
+			else
+				# Update mode
+				if [[ $# -eq 0 ]]; then
+					command="cd \"`pwd`\""
+					escaped_command=$(printf '%s' "$command" | sed -e 's/[\/&]/\\&/g')
+					sed -i "s/^${key}=.*/${key}=$escaped_command/g" "$_vader_go_shortcuts_file"
+					echo "Updated shortcut \"$key\" to the current directory: cd \"`pwd`\""
+				else
+					command="$*"
+					escaped_command=$(printf '%s' "$command" | sed -e 's/[\/&]/\\&/g')
+					sed -i "s/^${key}=.*/${key}=$escaped_command/g" "$_vader_go_shortcuts_file"
+					echo "Updated shortcut \"$key\": $*"
+				fi
+			fi
+
+			_vader_go_reload_shortcuts_file
+			return 0
 			;;
-		-r|--remove)
-			# go --remove key
+		-r|--remove|-d|--delete) # go --remove <key>
+			key="$2"
+			if [[ -z "$key" ]]; then
+				echo "Error: Missing key for $1."
+				return 1
+			fi
+			if [[ "$key" == -* ]]; then
+				echo "Error: Key \"$key\" is invalid for $1. Keys must not start with \"-\"."
+				return 1
+			fi
+			if [[ $# -gt 2 ]]; then
+				echo "Error: Too many arguments for $1. Arguments \"$*\" are unused."
+				return 1
+			fi
+
+			matching_rows=$(grep -c "^${key}=" "$_vader_go_shortcuts_file")
+			if [[ $matching_rows -eq 0 ]]; then
+				echo "Error: Key \"$key\" is not found."
+				return 2
+			fi
+
+			sed -i "/^${key}=/d" "$_vader_go_shortcuts_file"
+			echo "Removed shortcut \"$key\"."
+			_vader_go_reload_shortcuts_file
+			return 0
 			;;
-		-i|--interactive)
-			vim $_vader_go_shortcuts_file
+		-e|--edit) # go --edit
+			if [[ $# -gt 2 ]]; then
+				echo "Error: Too many arguments for $1. Arguments \"$*\" are unused."
+				return 1
+			fi
+
+			vim "$_vader_go_shortcuts_file"
 			_vader_go_reload_shortcuts_file
 			return 0
 			;;
 		-h|--help)
-			echo "Usage: go"
+			echo "Usage: go [KEY|SUBCOMMAND]"
+			echo "  go <key>                          Execute a shortcut"
+			echo ""
+			echo "SUBCOMMAND:"
+			echo "  -a, --add <key> [<command...>]    Create a new shortcut"
+			echo "  -s, --save <key> [<command...>]   Create or update a shortcut"
+			echo "  -u, --update <key> [<command...>] Update the command of an existing shortcut"
+			echo "  -r, --remove <key>                Remove an existing shortcut"
+			echo "  -e, --edit                        Opens an interactive editor to edit the shortcut"
+			echo "  -h, --help"
 			return 0
 			;;
 		-*)
