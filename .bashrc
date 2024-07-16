@@ -21,6 +21,6 @@ esac
 
 source ~/bash/alias.sh
 source ~/bash/ps1.sh
-source ~/bash/go.sh
+source ~/bash/v.sh
 source ~/bash/env.sh
 
