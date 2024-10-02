@@ -14,6 +14,7 @@ _vader_v_shortcuts_sorted_keys="" # Global cached key sort result, filled on dem
 _vader_v_completion() {
 	local FOR_DISPLAY=1
 
+	# TODO P4: Bug: v ech message<tab><tab> incorrectly searches for "message" instead of "ech" (prefix of echo) as key
 	# TODO P5: Bug: v t<tab>^Cv t<tab><tab> incorrectly prints a tab and does not prints the possilbe options
 	if [ "${__VADER_v_PREV_LINE:-}" != "$COMP_LINE" ] || [ "${__VADER_v_PREV_POINT:-}" != "$COMP_POINT" ]; then
 		__VADER_v_PREV_LINE="$COMP_LINE"
@@ -256,23 +257,24 @@ v() {
 	fi
 
 	# --- Normal execution ---
-	if [[ -v "_vader_v_shortcuts[$1]" ]]; then
+	arg_count=$#
+	arg_key="$1"
+	shift 1
+
+	if [[ -v "_vader_v_shortcuts[$arg_key]" ]]; then
 		# Perfect match
-		eval ${_vader_v_shortcuts[$1]}
+		eval ${_vader_v_shortcuts[$arg_key]} $@
 	else
-		if [[ $# -eq 0 ]]; then
+		if [[ $arg_count -eq 0 ]]; then
 			# No argument
 			echo "Possible options are:"
-		elif [[ $# -gt 1 ]]; then
-			# More than one argument
-			echo "Too many arguments provided. Usage \"v <shortcut>\". Possible options are:"
 		else
-			# One argument
+			# One or more argument
 			local single_possibile_options=""
 			local has_possibile_options=0
 
 			for key in "${!_vader_v_shortcuts[@]}"; do
-				if [ "${key:0:${#1}}" == "$1" ]; then
+				if [ "${key:0:${#arg_key}}" == "$arg_key" ]; then
 					has_possibile_options=1
 					if [ "${single_possibile_options}" == "" ]; then
 						single_possibile_options="${key}"
@@ -284,18 +286,18 @@ v() {
 			done
 
 			if [ "${single_possibile_options}" != "" ]; then
-				eval ${_vader_v_shortcuts[${single_possibile_options}]}
+				eval ${_vader_v_shortcuts[${single_possibile_options}]} $@
 				return
 			elif [ $has_possibile_options -ne 0 ]; then
-				echo "Multiple shortcut matches '$1'. Possible options are:"
+				echo "Multiple shortcut matches '$arg_key'. Possible options are:"
 				for key in "${!_vader_v_shortcuts[@]}"; do
-					if [ "${key:0:${#1}}" == "$1" ]; then
+					if [ "${key:0:${#arg_key}}" == "$arg_key" ]; then
 						printf "%-*s\n" "$COLUMNS" "$(printf "${_vader_v_shortcuts_indentation}%-${_vader_v_shortcuts_align_key}s" "${key}") - ${_vader_v_shortcuts[$key]}"
 					fi
 				done
 				return
 			else
-				echo "Missing shortcut for '$1'. Possible options are:"
+				echo "Missing shortcut for '$arg_key'. Possible options are:"
 			fi
 		fi
 
