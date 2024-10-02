@@ -61,3 +61,6 @@ md () {
 	cd -P -- "$1"
 }
 
+# go - v: Alias for the v shortcut command for legacy reasons
+alias go=v
+complete -F _vader_v_completion go
