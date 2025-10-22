@@ -16,6 +16,7 @@ alias cloc="cloc --force-lang=GLSL,fs,gs,cs,vs"
 alias npm="pnpm"
 alias npx="pnpx"
 alias updaterc="(cd && git clone https://github.com/VaderDev/rc.git _rc_repo && _rc_repo/update.sh; rm -rf ~/_rc_repo) && source ~/.bashrc"
+alias vscmake="/D/utility/Microsoft\ Visual\ Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe"
 
 # g - git
 alias g=git
@@ -61,6 +62,3 @@ md () {
 	cd -P -- "$1"
 }
 
-# go - v: Alias for the v shortcut command for legacy reasons
-alias go=v
-complete -F _vader_v_completion go
