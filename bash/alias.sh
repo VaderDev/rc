@@ -12,7 +12,7 @@ alias cls='clear'
 alias ll='ls -hAlo -F --color=auto --show-control-chars --group-directories-first'
 alias ls='ls -hA -F --color=auto --show-control-chars --group-directories-first'
 alias rtail="tail --follow=name --retry -n 500"
-alias cloc="cloc --force-lang=GLSL,fs,gs,cs,vs"
+alias cloc="cloc --force-lang=GLSL,fs,gs,cs,vs --fmt=2"
 alias npm="pnpm"
 alias npx="pnpx"
 alias updaterc="(cd && git clone https://github.com/VaderDev/rc.git _rc_repo && _rc_repo/update.sh; rm -rf ~/_rc_repo) && source ~/.bashrc"
